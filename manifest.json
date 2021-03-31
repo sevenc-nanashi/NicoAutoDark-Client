@@ -1,19 +1,18 @@
 {
 
     "manifest_version": 2,
-    "name": "Github Translator",
+    "name": "Niconico Auto Flipper",
     "version": "1.0",
-  
-    "description": "Translats the GitHub.",
-  
-    "content_scripts": [
-      {
-        "matches": ["*://github.com/*"],
-        "js": ["translate.js"]
-      }
-    ],
+
+    "description": "HogeHoge",
+
+    "content_scripts": [{
+        "matches": ["*://*.nicovideo.jp/*"],
+        "js": ["main.js"],
+        "run_at": "document_end"
+    }],
     "permissions": [
-      "*://*.github.com/*"
+        "*://*.nicovideo.jp/*"
     ]
-  
-  }
+
+}

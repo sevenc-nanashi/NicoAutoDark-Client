@@ -1,9 +1,4 @@
-# github-translator
-GitHubを日本語化するアドオンです。
+# NicoAutoDark-Client
+[niconico-darkmode](https://github.com/AyumuNekozuki/niconico-darkmode/tree/v2.0.3)の非公式拡張です。
 
-## 編集
-
-1. フォーク
-2. ブランチを作る
-  - 翻訳関係は`trans/`、その他コード修正は`code/`にしてください。
-3. PRを立てる
+Now Writing...
