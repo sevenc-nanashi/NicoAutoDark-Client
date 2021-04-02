@@ -7,7 +7,7 @@
     "description": "HogeHoge",
 
     "content_scripts": [{
-        "matches": ["*://*.nicovideo.jp/*"],
+        "matches": ["*://*.nicovideo.jp/watch/*"],
         "js": ["main.js"],
         "run_at": "document_end"
     }],

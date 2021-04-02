@@ -1,22 +1,5 @@
-function reqListener() {
-    // console.log(this, this.status)
-    if (this.status !== 200) { return }
-    resp = JSON.parse(this.responseText)
-    flipKeyframe = resp.flip
-    newNode = document.createElement("script")
-    newContent = document.createTextNode(`
-        frame = [${flipKeyframe}]
-        frame_for = location.pathname
-    `)
-    newNode.appendChild(newContent)
-    document.body.appendChild(newNode)
-
-}
 console.log("Niconico DarkMode: Flipper")
-var oReq = new XMLHttpRequest()
-oReq.addEventListener("load", reqListener)
-oReq.open("GET", "https://NicoAutoDark.sevencnanashi.repl.co/" + location.pathname.split("/").pop())
-oReq.send()
+
 window.addEventListener("load", () => {
     newNode = document.createElement("script")
     newContent = document.createTextNode(`
@@ -44,13 +27,13 @@ function update_seekbar(){
     duration = __videoplayer._lastDuration
     frame.forEach((e,i)=>{
         ra += \`
-        <span style="background:' + (i % 2 == 0 ? "#111" : "white") + ';position:absolute;height:4px;top:0px;left:' + (e / duration * 100).toString() + "%;right:" + (100 - (frame[i+1] / duration * 100)).toString() + '%">
+        <span style="background:\` + (i % 2 == 0 ? "#111" : "white") + \`;position:absolute;height:4px;top:0px;left:\` + (e / duration * 100).toString() + \`%;right:\` + (100 - (frame[i+1] / duration * 100)).toString() + \`%">
         </span>
         \`
     })
     document.getElementById("white_and_black").innerHTML = ra
 }
-if((!frame) || frame_for != location.pathname){
+if((typeof variable === 'undefined') || frame_for != location.pathname){
     frame = []
 }else if (frame){
     intv3 = setInterval(()=>{
@@ -90,7 +73,32 @@ intv = setInterval(()=>{
     clearInterval(intv)
 }, 10)
 setInterval(update_screen, 10)
-
+function submit_data(){
+    var oReq = new XMLHttpRequest()
+    oReq.onreadystatechange = ()=>{
+        if(oReq.readyState !== 4 ){ return }
+        switch (oReq.status) {
+            case 429:
+                document.querySelector("#kff_error_view").innerText = "アップロードは5分に1度しかできません。"
+                break
+            case 403:
+                document.querySelector("#kff_error_view").innerText = "パスワードが違います。"
+                break
+            default:
+                console.log(Math.floor(oReq.status / 100))
+                if(Math.floor(oReq.status / 100) == 2){
+                    document.querySelector("#kff_success_view").innerText = "正常にアップロードされました。反映には時間がかかる場合があります。"
+                }else{
+                    document.querySelector("#kff_error_view").innerText = "不明なエラーが発生しました。"
+                }
+        }
+    }
+    document.querySelector("#kff_error_view").innerText = ""
+    document.querySelector("#kff_success_view").innerText = ""
+    oReq.open("POST", "https://NicoAutoDark.sevencnanashi.repl.co/" + location.pathname.split("/").pop())
+    oReq.setRequestHeader("Content-Type", "application/json");
+    oReq.send(JSON.stringify({"userid": userId,"name": document.querySelector("#kff_username").value, "pass": document.querySelector("#kff_password").value, "frame": frame}))
+}
 intv2 = setInterval(()=>{
     if(!document.querySelector(".nicodark-setting-menupanel")){return}
     document.querySelector(".nicodark-setting-menupanel").innerHTML += \`
@@ -102,9 +110,35 @@ intv2 = setInterval(()=>{
             <span style="background: #8884;padding: 1px 4px;border-radius: 4px;">T</span> to add keyframe<br>
             <span style="background: #8884;padding: 1px 4px;border-radius: 4px;">B</span> to remove keyframe
         </p>
+        <div style="text-align: center;">
+            <input type="password" style="height: 20px;border-radius: 4px;" placeholder="パスワード" id="kff_password">
+            <input type="textbox" style="height: 20px;border-radius: 4px;" placeholder="名前" id="kff_username"><br>
+            <input type="button" style="display: inline;height: 20px;line-height: 20px;padding: 0px 16px;" onclick="submit_data()" value="投稿">
+            <p style="color: #4f4;text-align: center;" id="kff_success_view"></p>
+            <p style="color: #f44;text-align: center;" id="kff_error_view"></p>
+        </div>
     </div>\`
     clearInterval(intv2)
 }, 10)
+var oReq = new XMLHttpRequest()
+oReq.addEventListener("load", reqListener)
+oReq.open("GET", "https://NicoAutoDark.sevencnanashi.repl.co/" + location.pathname.split("/").pop())
+
+function reqListener() {
+    // console.log(this, this.status)
+    if (this.status !== 200) { return }
+    resp = JSON.parse(this.responseText)
+    flipKeyframe = resp.flip
+    newNode = document.createElement("script")
+    newContent = document.createTextNode(\`
+        frame = [\` + flipKeyframe.toString() + \`]
+        frame_for = location.pathname
+        update_seekbar()
+    \`)
+    newNode.appendChild(newContent)
+    document.body.appendChild(newNode)
+}
+oReq.send()
 `)
     newNode.appendChild(newContent)
 
